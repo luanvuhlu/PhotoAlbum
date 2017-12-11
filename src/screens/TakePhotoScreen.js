@@ -6,7 +6,8 @@ import {
     TouchableHighlight,    
 } from 'react-native'
 import Camera from 'react-native-camera';
-
+import {connect} from 'react-redux';
+import {reloadAlbum} from '../redux/modules/albums/actions';
 
 class TakePhotoScreen extends Component {
     static navigationOptions = {
@@ -35,10 +36,18 @@ class TakePhotoScreen extends Component {
     barcodeScan(data){
         console.log(data);
     }
+
+    reloadGallery(){
+       this.props.reloadAlbum(); 
+    }
     takePicture(){
         const options = {};
         this.camera.capture({metadata: options})
-        .then((data)=> console.log(data))
+        .then((data)=> {
+            this.props.reloadAlbum(); 
+            // this.props.navigation.dispatch(reloadAlbum());
+            this.props.navigation.goBack(null);
+        })
         .catch((err) => console.error(err));
     }
 }
@@ -67,4 +76,6 @@ const styles = StyleSheet.create({
     }
 });
 
-export default TakePhotoScreen;
+const mapStateToProps = (state, ownProps) => {
+};
+export default connect(mapStateToProps, reloadAlbum)(TakePhotoScreen);

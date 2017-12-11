@@ -7,12 +7,25 @@ import {
     TouchableHighlight,
 } from 'react-native';
 
-import {CameraKitGalleryView} from 'react-native-camera-kit';
+import {
+    CameraKitGalleryView, 
+    CameraKitGallery
+} from 'react-native-camera-kit';
+import {connect} from 'react-redux';
 
 const window = Dimensions.get('window');
 
 class PhotosScreen extends Component{
     static navigationOptions = { header: null }
+    componentWillReceiveProps(nextProps){
+        console.log(nextProps);
+        if(this.props.reload === nextProps.reload){
+            return;
+        }
+        if(nextProps.reload){
+            this.gallery =  CameraKitGallery.getAlbumsWithThumbnails();
+        }
+    }
     render(){
         return (
             <View style={styles.container}>
@@ -37,6 +50,11 @@ class PhotosScreen extends Component{
     }
 
     
+}
+const mapStateToProps = state => {
+    return {
+        reload: state.reload,
+    };
 }
 
 const styles = StyleSheet.create({
@@ -81,4 +99,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default PhotosScreen;
+export default connect(mapStateToProps)(PhotosScreen);

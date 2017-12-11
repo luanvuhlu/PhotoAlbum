@@ -1,75 +1,14 @@
 import React from 'react';
-import {
-	Text,
-	View,
-	StyleSheet,
-} from 'react-native';
-import {
-	DrawerNavigator,
-	TabNavigator,
-	StackNavigator,
-  } from 'react-navigation';
-import './config/ReactotronConfig';
-  
-import AssistantScreen from './screens/AssistantScreen';
-import PhotosScreen from './screens/PhotosScreen';
-import AlbumsScreen from './screens/AlbumsScreen';
-import SharingScreen from './screens/SharingScreen';
-import TakePhotoScreen from './screens/TakePhotoScreen';
-import TakePhotoNativeScreen from './screens/TakePhotoNativeScreen';
+import {Provider} from 'react-redux';
+import store from './redux';
+import AppNavigator from './AppNavigator';
 
-const TabsScreen = TabNavigator({
-	Assistant: {
-		screen: AssistantScreen,
-	},
-	Photos: {
-		screen: PhotosScreen,
-	},
-	Albums: {
-		screen: AlbumsScreen,
-	},
-	Sharing: {
-		screen: SharingScreen,
-	},
-}, {
-	tabBarPosition: 'bottom',
-	swipeEnabled: false
-});
+const MainApp = () => {
+    return (
+        <Provider store={store}>
+            <AppNavigator />
+        </Provider>
+    );
+};
 
-const TakePhotoStack = StackNavigator({
-	tabNav: {
-		screen: TabsScreen,
-	},
-	photo: {
-		screen: PhotosScreen,
-	},
-	takePhoto: {
-		screen: TakePhotoScreen,
-	},
-	takePhotoNative: {
-		screen: TakePhotoNativeScreen,
-	}
-});
-
-const MainApp = DrawerNavigator({
-	home: {
-		path: '/',
-		screen: TakePhotoStack,
-	},
-	device_folder: {
-		path: '/device-folder',
-		screen: () => (<Text>Device folder</Text>),
-	},
-	archive: {
-		path: '/archive',
-		screen: () => (<Text>Archive</Text>),
-	},
-	trash: {
-		path: '/trash',
-		screen: () => (<Text>Trash</Text>),
-	},
-},{
-	initialRouteName: 'home',
-});
-
-export default MainApp
+export default MainApp;
