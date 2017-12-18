@@ -5,6 +5,8 @@ const initialState = {
 };
 
 export default function reducer(state = initialState, action) {
+  console.log(state);
+  console.log(action);
   switch (action.type) {
     case RELOAD_ALBUM:
       return {

@@ -44,7 +44,7 @@ class TakePhotoScreen extends Component {
         const options = {};
         this.camera.capture({metadata: options})
         .then((data)=> {
-            this.props.reloadAlbum(); 
+            this.props.reloadAlbum();
             // this.props.navigation.dispatch(reloadAlbum());
             this.props.navigation.goBack(null);
         })
@@ -77,5 +77,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
+    return {reloadAlbum : reloadAlbum};
 };
 export default connect(mapStateToProps, reloadAlbum)(TakePhotoScreen);

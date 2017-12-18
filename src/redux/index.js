@@ -1,8 +1,12 @@
-import {combineReducers} from 'redux';
+import {createStore, combineReducers} from 'redux';
 import albums from './modules/albums/reducer';
 import network from './modules/network/reducer';
 
-export default combineReducers({
+const reducers = combineReducers({
     albums,
     network,
 });
+
+const store = createStore(reducers);
+
+export default store;
