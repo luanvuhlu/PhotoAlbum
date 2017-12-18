@@ -17,13 +17,16 @@ const window = Dimensions.get('window');
 
 class PhotosScreen extends Component{
     static navigationOptions = { header: null }
+
     componentWillReceiveProps(nextProps){
-        console.log(nextProps);
-        if(this.props.reload === nextProps.reload){
+        if(this.props.lastEditedImage === nextProps.lastEditedImage){
             return;
         }
-        if(nextProps.reload){
-            this.gallery =  CameraKitGallery.getAlbumsWithThumbnails();
+        if(nextProps.lastEditedImage){
+            this.props.lastEditedImage = null;
+            console.log(nextProps);
+            console.log(this.gallery.refreshGalleryView);
+            this.gallery.refreshGalleryView(nextProps.lastEditedImage);
         }
     }
     render(){
@@ -50,11 +53,6 @@ class PhotosScreen extends Component{
     }
 
     
-}
-const mapStateToProps = (state) => {
-    return {
-        reload: state.reload,
-    };
 }
 
 const styles = StyleSheet.create({
@@ -99,4 +97,10 @@ const styles = StyleSheet.create({
     },
   });
 
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        lastEditedImage: state.albums.lastEditedImage,
+    };
+}
 export default connect(mapStateToProps)(PhotosScreen);

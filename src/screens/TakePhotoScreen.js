@@ -7,7 +7,8 @@ import {
 } from 'react-native'
 import Camera from 'react-native-camera';
 import {connect} from 'react-redux';
-import {reloadAlbum} from '../redux/modules/albums/actions';
+import {bindActionCreators} from 'redux';
+import {addPhoto} from '../redux/modules/albums/actions';
 
 class TakePhotoScreen extends Component {
     static navigationOptions = {
@@ -37,16 +38,11 @@ class TakePhotoScreen extends Component {
         console.log(data);
     }
 
-    reloadGallery(){
-       this.props.reloadAlbum(); 
-    }
     takePicture(){
         const options = {};
         this.camera.capture({metadata: options})
         .then((data)=> {
-            this.props.reloadAlbum();
-            // this.props.navigation.dispatch(reloadAlbum());
-            this.props.navigation.goBack(null);
+            this.props.dispatch(addPhoto(data.path));
         })
         .catch((err) => console.error(err));
     }
@@ -76,7 +72,4 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = (state, ownProps) => {
-    return {reloadAlbum : reloadAlbum};
-};
-export default connect(mapStateToProps, reloadAlbum)(TakePhotoScreen);
+export default connect(null)(TakePhotoScreen);

@@ -1,10 +1,9 @@
-export const RELOAD_ALBUM = 'album/RELOAD_ALBUM';
+export const ADD_PHOTO = 'album/ADD_PHOTO';
 
 
-export function reloadAlbum(){
-    console.log('reload album action');
+export function addPhoto(lastEditedImage){
     return {
-        type: RELOAD_ALBUM,
-        payload: true,
+        type: ADD_PHOTO,
+        payload: lastEditedImage,
     }
 }
