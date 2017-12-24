@@ -12,7 +12,7 @@ import {
 import './config/ReactotronConfig';
   
 import AssistantScreen from './screens/AssistantScreen';
-import PhotosScreen from './screens/PhotosScreen';
+// import PhotosScreen from './screens/PhotosScreen';
 import NativeGalerryScreen from './screens/NativeGalleryScreen';
 import PhotoDetailScreen from './screens/PhotoDetailScreen';
 import AlbumsScreen from './screens/AlbumsScreen';
@@ -44,7 +44,7 @@ const TakePhotoStack = StackNavigator({
 		screen: TabsScreen,
 	},
 	photo: {
-		screen: PhotosScreen,
+		screen: NativeGalerryScreen,
 	},
 	photoDetail: {
 		screen: PhotoDetailScreen,
