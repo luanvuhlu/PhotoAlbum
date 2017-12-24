@@ -26,8 +26,8 @@ class TakePhotoScreen extends Component {
                     style={styles.preview}
                     onBarCodeRead={this.barcodeScan.bind(this)}
                     aspect={Camera.constants.Aspect.fill}>
-                    <TouchableHighlight onPress={this.takePicture.bind(this)}>
-                        <Text style={styles.capture}></Text>
+                    <TouchableHighlight onPress={this.takePicture.bind(this)} style={styles.capture}>
+                        <Text></Text>
                     </TouchableHighlight>
                 </Camera>
             </View>
@@ -60,13 +60,13 @@ const styles = StyleSheet.create({
     },
     capture: {
       flex: 0,
-      borderWidth:1,
+      borderWidth: 0,
       borderColor:'rgba(0,0,0,0.2)',
       alignItems:'center',
       justifyContent:'center',
       width:70,
       height:70,
-      backgroundColor: '#673AB7',
+      backgroundColor: 'white',
       borderRadius:70,
       marginBottom: 10,
     }

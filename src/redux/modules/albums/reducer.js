@@ -1,4 +1,4 @@
-import { ADD_PHOTO } from './actions';
+import { ADD_PHOTO, VIEW_PHOTO } from './actions';
 
 const initialState = {
   reload: false,
@@ -10,6 +10,11 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         lastEditedImage: action.payload,
+      };
+    case VIEW_PHOTO:
+      return {
+        ...state,
+        imageUri: action.payload,
       };
     default:
       return state;

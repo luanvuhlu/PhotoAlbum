@@ -12,6 +12,7 @@ import {
     CameraKitGallery
 } from 'react-native-camera-kit';
 import {connect} from 'react-redux';
+import { viewPhoto } from '../redux/modules/albums/actions';
 
 const window = Dimensions.get('window');
 
@@ -24,8 +25,6 @@ class PhotosScreen extends Component{
         }
         if(nextProps.lastEditedImage){
             this.props.lastEditedImage = null;
-            console.log(nextProps);
-            console.log(this.gallery.refreshGalleryView);
             this.gallery.refreshGalleryView(nextProps.lastEditedImage);
         }
     }
@@ -36,10 +35,17 @@ class PhotosScreen extends Component{
                     ref={(gallery) => {
                         this.gallery = gallery;
                     }}
+                    onTapImage = {event => {
+                        this.props.dispatch(viewPhoto(event.nativeEvent.selected));
+                        this.props.navigation.navigate('photoDetail');
+                    }}
                     style={styles.photoContainer}
                     minimumInteritemSPacing={10}
                     minimumLineSpacing={10}
                     columnCount={3}
+                    selection={{
+                        overlayColor: 0
+                    }}
                 />
                 <View style={styles.takePhotoBtnContainer}>
                     <TouchableHighlight
@@ -98,7 +104,6 @@ const styles = StyleSheet.create({
   });
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
         lastEditedImage: state.albums.lastEditedImage,
     };

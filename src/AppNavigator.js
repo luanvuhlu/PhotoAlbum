@@ -13,6 +13,8 @@ import './config/ReactotronConfig';
   
 import AssistantScreen from './screens/AssistantScreen';
 import PhotosScreen from './screens/PhotosScreen';
+import NativeGalerryScreen from './screens/NativeGalleryScreen';
+import PhotoDetailScreen from './screens/PhotoDetailScreen';
 import AlbumsScreen from './screens/AlbumsScreen';
 import SharingScreen from './screens/SharingScreen';
 import TakePhotoScreen from './screens/TakePhotoScreen';
@@ -23,7 +25,8 @@ const TabsScreen = TabNavigator({
 		screen: AssistantScreen,
 	},
 	Photos: {
-		screen: PhotosScreen,
+		// screen: PhotosScreen,
+		screen: NativeGalerryScreen,
 	},
 	Albums: {
 		screen: AlbumsScreen,
@@ -42,6 +45,9 @@ const TakePhotoStack = StackNavigator({
 	},
 	photo: {
 		screen: PhotosScreen,
+	},
+	photoDetail: {
+		screen: PhotoDetailScreen,
 	},
 	takePhoto: {
 		screen: TakePhotoScreen,
