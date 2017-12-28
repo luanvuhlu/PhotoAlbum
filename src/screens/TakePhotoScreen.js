@@ -42,6 +42,7 @@ class TakePhotoScreen extends Component {
         const options = {};
         this.camera.capture({metadata: options})
         .then((data)=> {
+            console.log(data);
             this.props.dispatch(addPhoto(data.path));
         })
         .catch((err) => console.error(err));

@@ -5,13 +5,20 @@ import {
     Text,
     ScrollView,
     Image,
-    CameraRoll
+    CameraRoll,
+    TouchableHighlight,
+    FlatList
 } from 'react-native';
 import {connect} from 'react-redux';
+import { viewPhoto } from '../redux/modules/albums/actions';
 
-const ITEM_PER_PAGE = 25;
+const ITEM_PER_PAGE = 32;
 
-
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom;
+};
 
 class NativeGalleryScreen extends Component{
     static navigationOptions = {header: null}
@@ -19,20 +26,48 @@ class NativeGalleryScreen extends Component{
     constructor(){
         super();
         this.state = {
-            images: []
+            images: [],
+            end_photo_cursor: null,
+            hasNextPhoto: true
         };
 
         this.storeImages = this.storeImages.bind(this);
         this.logImageError = this.logImageError.bind(this);
+        this._renderItem = this._renderItem.bind(this);
     }
 
-    componentDidMount(){
+    componentWillMount(){
+        this.getPhoto();        
+    }
+
+    getPhoto(){
+        console.log(this.state.hasNextPhoto);
+
+
         const fetchParam = {
             first: ITEM_PER_PAGE,
+            after: this.state.end_photo_cursor
         };
         CameraRoll.getPhotos(fetchParam)
         .then(this.storeImages)
         .catch(this.logImageError);
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(this.props.lastEditedImage === nextProps.lastEditedImage){
+            return;
+        }
+        if(nextProps.lastEditedImage){
+            this.props.lastEditedImage = null;
+            this.setState({
+                images: this.sliceImageArray(nextProps.lastEditedImage, this.state.images)
+            });
+            console.log(this.state);
+        }
+    }
+
+    sliceImageArray(newImage, images){
+        return [{uri: newImage}, ...images];
     }
 
     storeImages(data){
@@ -40,21 +75,56 @@ class NativeGalleryScreen extends Component{
         const assets = data.edges;
         const images = assets.map(asset => asset.node.image);
         this.setState({
-            images: images,
+            images: [...this.state.images, ...images],
+            end_photo_cursor: data.page_info.end_cursor,
+            hasNextPhoto: data.page_info.has_next_page
         });
     }
 
     logImageError(err){
         console.log(err);
     }
+    // TODO use PureComponent
+    _renderItem(listItem){
+        return (
+                <TouchableHighlight
+                    onPress={() => {
+                        images = this.state.images.slice(listItem.index < 1 ? 0 : listItem.index-1, listItem.index+2);
+                        this.props.dispatch(viewPhoto(0, images));
+                        this.props.navigation.navigate('photoDetail');
+                    }}>
+                    <Image 
+                        style={styles.image} 
+                        source={{uri: listItem.item.uri}}
+                         />
+                </TouchableHighlight>
+            )
+    }
 
     render(){
+        console.log(this.state);
         return (
-            <ScrollView style={styles.container}>
-                <View style={styles.imageGrid}>
-                    {this.state.images.map(image => <Image key={image.uri} style={styles.image} source={{uri: image.uri}} />)}
+            <View style={styles.container}>
+                <FlatList style={styles.imageGrid}
+                    data={this.state.images}
+                    renderItem={this._renderItem}
+                    numColumns={4}
+                    keyExtractor={(item, index) => index}
+                    scrollToIndex={0}
+                    onEndReached={() => {
+                        if(this.state.hasNextPhoto){
+                            this.getPhoto();
+                        }
+                    }}>
+                </FlatList>
+                <View style={styles.takePhotoBtnContainer}>
+                    <TouchableHighlight
+                        style={styles.takePhotoBtn}
+                        onPress={() => this.props.navigation.navigate('takePhoto')}>
+                        <Text style={styles.takeByShit}>+</Text>
+                    </TouchableHighlight>
                 </View>
-            </ScrollView>
+            </View>
         );
     }
 }
@@ -65,21 +135,34 @@ const styles = StyleSheet.create({
     },
     imageGrid: {
         flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-start'
     },
     image: {
         width: 100,
         height: 100,
         marginLeft: 1,
         marginTop: 2,
-    }
+    },
+    takePhotoBtnContainer: {
+        position: 'absolute',
+        bottom: 5,
+        left: 5,
+    },
+    takePhotoBtn: {
+        borderWidth:1,
+        borderColor:'rgba(0,0,0,0.2)',
+        alignItems:'center',
+        justifyContent:'center',
+        width:70,
+        height:70,
+        backgroundColor: '#673AB7',
+        borderRadius:70,
+    },
 });
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        photos: state.photos
+        // images: state.images,
+        lastEditedImage: state.albums.lastEditedImage,
     }
 }
 

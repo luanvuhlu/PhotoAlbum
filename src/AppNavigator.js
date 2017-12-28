@@ -21,12 +21,12 @@ import TakePhotoScreen from './screens/TakePhotoScreen';
 import TakePhotoNativeScreen from './screens/TakePhotoNativeScreen';
 
 const TabsScreen = TabNavigator({
-	Assistant: {
-		screen: AssistantScreen,
-	},
 	Photos: {
 		// screen: PhotosScreen,
 		screen: NativeGalerryScreen,
+	},
+	Assistant: {
+		screen: AssistantScreen,
 	},
 	Albums: {
 		screen: AlbumsScreen,

@@ -14,7 +14,7 @@ export default function reducer(state = initialState, action) {
     case VIEW_PHOTO:
       return {
         ...state,
-        imageUri: action.payload,
+        imageInfo: action.payload,
       };
     default:
       return state;

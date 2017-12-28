@@ -8,9 +8,12 @@ export function addPhoto(lastEditedImage){
     }
 }
 
-export function viewPhoto(uri){
+export function viewPhoto(index, images){
     return {
         type: VIEW_PHOTO,
-        payload: 'file://' + uri
+        payload: {
+        	index: index,
+        	images: images
+        }
     }
 }
