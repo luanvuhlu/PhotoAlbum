@@ -18,7 +18,6 @@ import PhotoDetailScreen from './screens/PhotoDetailScreen';
 import AlbumsScreen from './screens/AlbumsScreen';
 import SharingScreen from './screens/SharingScreen';
 import TakePhotoScreen from './screens/TakePhotoScreen';
-import TakePhotoNativeScreen from './screens/TakePhotoNativeScreen';
 
 const TabsScreen = TabNavigator({
 	Photos: {
@@ -52,9 +51,6 @@ const TakePhotoStack = StackNavigator({
 	takePhoto: {
 		screen: TakePhotoScreen,
 	},
-	takePhotoNative: {
-		screen: TakePhotoNativeScreen,
-	}
 });
 
 const AppNavigator = DrawerNavigator({

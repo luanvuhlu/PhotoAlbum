@@ -12,7 +12,7 @@ import {
 import {connect} from 'react-redux';
 import { viewPhoto } from '../redux/modules/albums/actions';
 
-const ITEM_PER_PAGE = 32;
+const ITEM_PER_PAGE = 8;
 
 const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
   const paddingToBottom = 20;
@@ -20,6 +20,23 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     contentSize.height - paddingToBottom;
 };
 
+class PhotoItem extends React.PureComponent{
+
+    _onPress = () => {
+        this.props.onPressItem(this.props.index, this.props.images)
+    }
+    render(){
+       return (
+            <TouchableHighlight
+                onPress={this._onPress}>
+                <Image 
+                    style={styles.image} 
+                    source={{uri: this.props.item.uri}}
+                     />
+            </TouchableHighlight>
+        );
+    }
+}
 class NativeGalleryScreen extends Component{
     static navigationOptions = {header: null}
     
@@ -87,18 +104,16 @@ class NativeGalleryScreen extends Component{
     // TODO use PureComponent
     _renderItem(listItem){
         return (
-                <TouchableHighlight
-                    onPress={() => {
-                        images = this.state.images.slice(listItem.index < 1 ? 0 : listItem.index-1, listItem.index+2);
-                        this.props.dispatch(viewPhoto(0, images));
-                        this.props.navigation.navigate('photoDetail');
-                    }}>
-                    <Image 
-                        style={styles.image} 
-                        source={{uri: listItem.item.uri}}
-                         />
-                </TouchableHighlight>
-            )
+            <PhotoItem
+                index={listItem.index}
+                images={this.state.images}
+                item={listItem.item}
+                onPressItem={(index, images) => {
+                    this.props.dispatch(viewPhoto(0, images));
+                    this.props.navigation.navigate('photoDetail');
+                }}
+             />
+        )
     }
 
     render(){
