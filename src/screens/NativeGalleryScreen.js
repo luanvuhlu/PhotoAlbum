@@ -7,10 +7,11 @@ import {
     Image,
     CameraRoll,
     TouchableHighlight,
-    FlatList
+    FlatList,
+    TextInput,
 } from 'react-native';
 import {connect} from 'react-redux';
-import { viewPhoto } from '../redux/modules/albums/actions';
+import { viewPhoto, addPhoto } from '../redux/modules/albums/actions';
 
 const ITEM_PER_PAGE = 8;
 
@@ -23,8 +24,9 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
 class PhotoItem extends React.PureComponent{
 
     _onPress = () => {
-        this.props.onPressItem(this.props.index, this.props.images)
+        this.props.onPressItem(this.props.item)
     }
+
     render(){
        return (
             <TouchableHighlight
@@ -38,7 +40,24 @@ class PhotoItem extends React.PureComponent{
     }
 }
 class NativeGalleryScreen extends Component{
-    static navigationOptions = {header: null}
+    static navigationOptions = ({navigation}) => {
+        const { params = {} } = navigation.state;
+        var subHeader ;
+        if(params.isSelected){
+            subHeader = (<Text>Select</Text>);
+        }else{
+            subHeader = (<TextInput
+                        style={styles.searchField}
+                        onChangeText={(text) => console.log} />); // TODO does not work
+        }
+        return {
+            header: (
+                        <View style={styles.header}>
+                            {subHeader}
+                        </View>
+                    )
+        };
+    };
     
     constructor(){
         super();
@@ -54,13 +73,21 @@ class NativeGalleryScreen extends Component{
     }
 
     componentWillMount(){
-        this.getPhoto();        
+        this.getPhoto();
+    }
+
+    componentDidMount(){
+        this.props.navigation.setParams({ 
+            isSelected: false,
+            onSearchPhoto: this.onSearchPhoto
+        });
+    }
+
+    onSearchPhoto(text){
+        console.log(text);
     }
 
     getPhoto(){
-        console.log(this.state.hasNextPhoto);
-
-
         const fetchParam = {
             first: ITEM_PER_PAGE,
             after: this.state.end_photo_cursor
@@ -71,15 +98,20 @@ class NativeGalleryScreen extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        if(this.props.lastEditedImage === nextProps.lastEditedImage){
-            return;
-        }
         if(nextProps.lastEditedImage){
-            this.props.lastEditedImage = null;
             this.setState({
                 images: this.sliceImageArray(nextProps.lastEditedImage, this.state.images)
             });
-            console.log(this.state);
+        }
+        if(nextProps.removedImages){
+            console.log(nextProps.removedImages);
+            console.log(this.state.images);
+            images = this.state.images.filter((image) => 
+                !nextProps.removedImages.includes(image.uri));
+            console.log(images);
+            this.setState({
+                images: images
+            });
         }
     }
 
@@ -88,8 +120,8 @@ class NativeGalleryScreen extends Component{
     }
 
     storeImages(data){
-        console.log(data);
         const assets = data.edges;
+        console.log(assets);
         const images = assets.map(asset => asset.node.image);
         this.setState({
             images: [...this.state.images, ...images],
@@ -101,15 +133,12 @@ class NativeGalleryScreen extends Component{
     logImageError(err){
         console.log(err);
     }
-    // TODO use PureComponent
     _renderItem(listItem){
         return (
             <PhotoItem
-                index={listItem.index}
-                images={this.state.images}
                 item={listItem.item}
-                onPressItem={(index, images) => {
-                    this.props.dispatch(viewPhoto(0, images));
+                onPressItem={item => {
+                    this.props.dispatch(viewPhoto(item.uri));
                     this.props.navigation.navigate('photoDetail');
                 }}
              />
@@ -117,7 +146,6 @@ class NativeGalleryScreen extends Component{
     }
 
     render(){
-        console.log(this.state);
         return (
             <View style={styles.container}>
                 <FlatList style={styles.imageGrid}
@@ -148,6 +176,11 @@ const styles = StyleSheet.create({
     container: {
        flex: 1 
     },
+    header: {
+    },
+    searchField: {
+        height: 50,
+    },
     imageGrid: {
         flex: 1,
     },
@@ -174,10 +207,10 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
     return {
-        // images: state.images,
         lastEditedImage: state.albums.lastEditedImage,
+        removedImages: state.albums.removedImages,
     }
 }
 

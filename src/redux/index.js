@@ -3,8 +3,8 @@ import albums from './modules/albums/reducer';
 import network from './modules/network/reducer';
 
 const reducers = combineReducers({
-    albums,
-    network,
+	albums,
+	network,
 });
 
 const store = createStore(reducers);

@@ -1,5 +1,5 @@
 import {
-    CameraRoll
+	CameraRoll
 } from 'react-native';
 export const LIST = 'camera/LIST';
 

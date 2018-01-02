@@ -8,7 +8,7 @@ import {
 	DrawerNavigator,
 	TabNavigator,
 	StackNavigator,
-  } from 'react-navigation';
+} from 'react-navigation';
 import './config/ReactotronConfig';
   
 import AssistantScreen from './screens/AssistantScreen';
@@ -72,6 +72,9 @@ const AppNavigator = DrawerNavigator({
 	},
 },{
 	initialRouteName: 'home',
+	drawerOpenRoute: 'DrawerOpen',
+	drawerCloseRoute: 'DrawerClose',
+	drawerToggleRoute: 'DrawerToggle'
 });
 
-export default AppNavigator
+export default AppNavigator;
